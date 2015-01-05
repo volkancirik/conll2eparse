@@ -5,8 +5,11 @@ This repository helps you prepare your conll-formatted benchmark for dependency 
 with embeddings. Structure is as follows.
 
 src/ the scripts and source code
+
 bin/ binary files
+
 run/ benchmark folders will be generated here
+
 embeddings/ word embeddings file. space separated, \*UNKNOWN\* is for unknown words. file extension is .embeddings
 data/ your benchmarks will be under this folder. the structure should be like this: there should be 3 folders. 00 for train, 01 for development 02 for test. file extension should be .dp .
 
