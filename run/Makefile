@@ -36,21 +36,21 @@ FS_OPTIONS=-n ${FS_NSUB} -p ${FS_PSUB}
 	cat $*.tok | fastsubs-omp ${FS_OPTIONS} $< | gzip > $@
 
 # embed context and type vectors
-%.embedded: %.sub.gz ${EMB_PREFIX}${EMB_TYPE}.embeddings ${EMB_PREFIX}${EMB_CONTEXT}.embeddings
+%.embedded.${EMB_TYPE}+${EMB_CONTEXT} : %.sub.gz ${EMB_PREFIX}${EMB_TYPE}.embeddings ${EMB_PREFIX}${EMB_CONTEXT}.embeddings
 	zcat $< | concatSubs ${EMB_PREFIX}${EMB_TYPE}.embeddings ${EMB_PREFIX}${EMB_CONTEXT}.embeddings | tr '\t' ' ' | sed 's/ $$//' > $@
 
 # add embedded token-vector representations to conll formattedfiles
-prepare.token.%_${EMB_TYPE}+${EMB_CONTEXT}: %.embedded
-	mkdir $*_token_${EMB_TYPE}+${EMB_CONTEXT}
+prepare.token.%_${EMB_TYPE}+${EMB_CONTEXT}: %.embedded.${EMB_TYPE}+${EMB_CONTEXT}
+	test -e $*_token_${EMB_TYPE}+${EMB_CONTEXT} || mkdir $*_token_${EMB_TYPE}+${EMB_CONTEXT}
 	enrich_with_embeddings.py --token --delimiter " " --offset 1 --length ${DIM} $< ${DPATH}/$* $*_token_${EMB_TYPE}+${EMB_CONTEXT}
 	rm -f $*.tok.gz $*.embedded
 	touch $@
 # add embedded word-type representations to conll formatted files
 prepare.type.%_${EMB_TYPE}: ${EMB_PREFIX}${EMB_TYPE}.embeddings
-	mkdir $*_type_${EMB_TYPE}
+	test -e $*_type_${EMB_TYPE} || mkdir $*_type_${EMB_TYPE}
 	enrich_with_embeddings.py --delimiter " " --offset 1 --length ${DIM} $< ${DPATH}/$* $*_type_${EMB_TYPE}
 	touch $@
 
 # Example Run
-# make prepare.type.conll-ptb-sample_cw-rcv1-25-scaled 
+# make prepare.type.conll-ptb-sample_cw-rcv1-25-scaled
 # make prepare.token.conll-ptb-sample_cw-rcv1-25-scaled+scode-wikipedia-25 DIM=50 LM=wsj.lm.gz -n

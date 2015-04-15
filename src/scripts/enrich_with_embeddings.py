@@ -95,8 +95,7 @@ if __name__ == '__main__':
                             embedding_token = viter.next().strip().split(args.delimiter)
                             
                             if embedding_token[0] != tokens[1]:
-                                logging.fatal("Embedding (%s) file is not aligned to corpus content(%s)",
-                                              embedding_token[0] != tokens[1])
+                                logging.fatal("Embedding file is not aligned to corpus content ")
                                 exit(1)
                             else:
                                 embedding_v = " ".join(d for d in embedding_token[args.offset:])
