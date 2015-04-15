@@ -7,12 +7,14 @@ EMB_PREFIX=../embeddings/
 # your benchmark is under this folder
 DPATH=../data
 
-# name of the benchmark {conll07,conll-ptb whatever you want} where conll-formatted dataset which is under ${DPATH}, 00 : train 01 : development 02 : test. file extension is .dp
+# name of the benchmark {conll07,conll-ptb whatever you want} where conll-formatted dataset which is under ${DPATH}
 CONLL_DATA=conll-ptb-sample
 
 # dimension of the word embeddings. for token based add dimensions for type and context vector dimensions
 DIM=25
 
+# extension of the conll formatted files
+EXTENSION=dp
 # run this one first
 bin:
 	cd ../bin ; make all
@@ -24,7 +26,7 @@ EMB_CONTEXT=scode-wikipedia-25
 
 # extract tokens from dataset
 %.tok:
-	find ${DPATH}/$*/ -name \*.dp | sort | xargs -I '{}' cat '{}' | cut -f2 | one-sentence-per-line.pl >> $@
+	find ${DPATH}/$*/ -name \*.${EXTENSION} | sort | xargs -I '{}' cat '{}' | cut -f2 | one-sentence-per-line.pl >> $@
 
 ### FASTSUBS options:
 FS_NSUB=100 # go until you have this many substitutes
@@ -52,5 +54,5 @@ prepare.type.%_${EMB_TYPE}: ${EMB_PREFIX}${EMB_TYPE}.embeddings
 	touch $@
 
 # Example Run
-# make prepare.type.conll-ptb-sample_cw-rcv1-25-scaled
+# make prepare.type.conll-ptb-sample_cw-rcv1-25-scaled -n
 # make prepare.token.conll-ptb-sample_cw-rcv1-25-scaled+scode-wikipedia-25 DIM=50 LM=wsj.lm.gz -n
