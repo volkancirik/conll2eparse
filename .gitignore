@@ -1,0 +1,8 @@
+../bin/concatSubs
+../bin/*.py
+../bin/fastsubs
+../bin/fastsubs-omp
+../bin/*.pl
+run/*
+../src/concatSubs
+../src/fastsubs/
